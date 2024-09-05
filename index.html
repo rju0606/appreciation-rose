@@ -58,6 +58,15 @@
         #shareButton:hover {
             background-color: #45a049;
         }
+        .share-options {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .share-option {
+            font-size: 24px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -74,23 +83,29 @@
         <div class="form-container">
             <h2>Your Appreciation Message</h2>
             <div id="result"></div>
-            <button id="shareButton" onclick="shareMessage()">Share</button>
+            <button id="shareButton" onclick="showShareOptions()">Share</button>
+            <div class="share-options" style="display:none;">
+                <span class="share-option" onclick="shareVia('whatsapp')">📱</span>
+                <span class="share-option" onclick="shareVia('email')">✉️</span>
+                <span class="share-option" onclick="shareVia('copy')">📋</span>
+            </div>
             <button onclick="goBack()">Create Another</button>
         </div>
     </div>
 
     <script>
+        let appreciationMessage = '';
+
         function generateAppreciation() {
             const name = document.getElementById('name').value;
             const reason = document.getElementById('reason').value;
             const result = document.getElementById('result');
             
             if (name && reason) {
+                appreciationMessage = `Dear ${name},\n\nThank you for being ${reason}.\nYou brighten my day like this rose: 🌹\n\nSent with love from Appreciation Rose Generator`;
+                
                 result.innerHTML = `
-                    <p>Dear ${name},</p>
-                    <p>dont get overwhelmed and ${reason}.</p>
-                    <p>Here is your virtual rose to brighten up:</p>
-                    <div class="rose">🌹</div>
+                    <p>${appreciationMessage.replace(/\n/g, '<br>')}</p>
                 `;
                 document.getElementById('inputPage').style.display = 'none';
                 document.getElementById('resultPage').style.display = 'flex';
@@ -104,17 +119,25 @@
             document.getElementById('resultPage').style.display = 'none';
         }
 
-        function shareMessage() {
-            const message = document.getElementById('result').innerText;
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Appreciation Rose',
-                    text: message
-                }).then(() => {
-                    console.log('Thanks for sharing!');
-                }).catch(console.error);
-            } else {
-                alert('Sharing is not supported on this browser. You can copy the message manually.');
+        function showShareOptions() {
+            document.querySelector('.share-options').style.display = 'flex';
+        }
+
+        function shareVia(method) {
+            switch(method) {
+                case 'whatsapp':
+                    window.open(`https://wa.me/?text=${encodeURIComponent(appreciationMessage)}`, '_blank');
+                    break;
+                case 'email':
+                    window.location.href = `mailto:?subject=A Rose for You&body=${encodeURIComponent(appreciationMessage)}`;
+                    break;
+                case 'copy':
+                    navigator.clipboard.writeText(appreciationMessage).then(() => {
+                        alert('Message copied to clipboard!');
+                    }).catch(err => {
+                        console.error('Failed to copy text: ', err);
+                    });
+                    break;
             }
         }
     </script>
