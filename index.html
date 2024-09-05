@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appreciation Rose Generator</title>
+    <style>
+        body, html {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: linear-gradient(to right, #ffe6f2, #ff69b4);
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+        }
+        .form-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+        input, button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #ff69b4;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #ff1493;
+        }
+        .rose {
+            color: #ff69b4;
+            font-size: 50px;
+            margin: 20px 0;
+        }
+        #shareButton {
+            margin-top: 20px;
+            background-color: #4CAF50;
+        }
+        #shareButton:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="inputPage">
+        <div class="form-container">
+            <h2>Appreciation Rose Generator</h2>
+            <input type="text" id="name" placeholder="Recipient's name">
+            <input type="text" id="reason" placeholder="Reason for appreciation">
+            <button onclick="generateAppreciation()">Generate Rose</button>
+        </div>
+    </div>
+
+    <div class="container" id="resultPage" style="display:none;">
+        <div class="form-container">
+            <h2>Your Appreciation Message</h2>
+            <div id="result"></div>
+            <button id="shareButton" onclick="shareMessage()">Share</button>
+            <button onclick="goBack()">Create Another</button>
+        </div>
+    </div>
+
+    <script>
+        function generateAppreciation() {
+            const name = document.getElementById('name').value;
+            const reason = document.getElementById('reason').value;
+            const result = document.getElementById('result');
+            
+            if (name && reason) {
+                result.innerHTML = `
+                    <p>Dear ${name},</p>
+                    <p>dont get overwhelmed and ${reason}.</p>
+                    <p>Here is your virtual rose to brighten up:</p>
+                    <div class="rose">🌹</div>
+                `;
+                document.getElementById('inputPage').style.display = 'none';
+                document.getElementById('resultPage').style.display = 'flex';
+            } else {
+                alert('Please fill in both fields.');
+            }
+        }
+
+        function goBack() {
+            document.getElementById('inputPage').style.display = 'flex';
+            document.getElementById('resultPage').style.display = 'none';
+        }
+
+        function shareMessage() {
+            const message = document.getElementById('result').innerText;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Appreciation Rose',
+                    text: message
+                }).then(() => {
+                    console.log('Thanks for sharing!');
+                }).catch(console.error);
+            } else {
+                alert('Sharing is not supported on this browser. You can copy the message manually.');
+            }
+        }
+    </script>
+</body>
+</html>
